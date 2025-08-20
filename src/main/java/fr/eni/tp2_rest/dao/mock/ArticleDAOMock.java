@@ -1,26 +1,29 @@
-package fr.eni.tp2_rest.dao;
+package fr.eni.tp2_rest.dao.mock;
 
 import fr.eni.tp2_rest.bo.Article;
+import fr.eni.tp2_rest.dao.IDAOArticle;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Profile("mock")
 @Component
-public class ArticleDAO {
+public class ArticleDAOMock implements IDAOArticle {
 
     // mock articleDB
     public List<Article> DB_ARTICLES;
 
-    public ArticleDAO() {
+    public ArticleDAOMock() {
         DB_ARTICLES = new ArrayList<>();
 
         // generer 10 articles
         for(int i = 0; i < 10; i++) {
             Article a = new Article();
 
-            a.id = i;
+            a.id = String.valueOf(i);
             a.title = String.format("Article n°%d", i);
 
             DB_ARTICLES.add(a);
@@ -32,17 +35,17 @@ public class ArticleDAO {
         return DB_ARTICLES;
     }
 
-    public Article getArticleById(int id)
+    public Article getArticleById(String id)
     {
         // findFirt renvoi un optionnal
-        Optional<Article> foundArticle = DB_ARTICLES.stream().filter(article -> article.id == id).findFirst();
+        Optional<Article> foundArticle = DB_ARTICLES.stream().filter(article -> article.id.equals(id)).findFirst();
 
         return foundArticle.orElse(null);
     }
 
-    public boolean deleteArticleById(int id)
+    public boolean deleteArticleById(String id)
     {
-        return DB_ARTICLES.removeIf(article -> article.id == id);
+        return DB_ARTICLES.removeIf(article -> article.id.equals(id));
     }
 
     public SaveResultDAO<Article> save(Article article){
@@ -51,7 +54,7 @@ public class ArticleDAO {
 
         // sinon mettre à jour
         // -- Si article existe ne base alors le modifier
-        Optional<Article> foundArticle = DB_ARTICLES.stream().filter(value -> value.id == article.id).findFirst();
+        Optional<Article> foundArticle = DB_ARTICLES.stream().filter(value -> value.id.equals(article.id)).findFirst();
 
         // si existe -> alors je le modifie
         if (foundArticle.isPresent()){
@@ -65,7 +68,7 @@ public class ArticleDAO {
 
         // Si id == null
         // générer un faux id
-        article.id = DB_ARTICLES.size() + 100;
+        article.id = String.valueOf(DB_ARTICLES.size() + 100);
         // Je ajoute l'article dans le tableau
         DB_ARTICLES.add(article);
 

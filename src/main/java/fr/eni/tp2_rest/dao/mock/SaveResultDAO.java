@@ -1,4 +1,4 @@
-package fr.eni.tp2_rest.dao;
+package fr.eni.tp2_rest.dao.mock;
 
 public class SaveResultDAO<T> {
 
